@@ -236,13 +236,16 @@ SMS_CONFIG = {
 ###################第三方微博登录配置###########
 CLIENT_ID = "3084428610"
 CLIENT_SECRET = "7bf7c254909e1cf92e210cf5e50419f1"
-REDIRECT_URI = "http://localhost:8008/dadashop/templates/callback.html"
+# REDIRECT_URI = "http://localhost:8008/dadashop/templates/callback.html"
+REDIRECT_URI = "http://localhost:8008/callback.html"  #如果html404里建议都写成这样的,这是我根据我部署的前端配置路径改的
 #############################################
 
 # http://127.0.0.1:8009/media/1.png
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-PIC_URL = 'http://127.0.0.1:8009' + MEDIA_URL
+# PIC_URL = 'http://127.0.0.1:8009' + MEDIA_URL  #查看PIC_URL被引用发现会返回给前端,使用后端端口来使apache作为图片服务器((需要apache配置media路径)
+PIC_URL = 'http://127.0.0.1:8008' + MEDIA_URL  #查看PIC_URL被引用发现会返回给前端,使用前端端口就意味着来使nginx作为图片服务器(需要nginx配置media路径) nginx更好
+
 
 
 ###############第三方支付配置##################
