@@ -54,16 +54,36 @@ mysql+redis
 
 1.前端  ->nginx（自行配置）8008
     添加nginx配置
-    根据上面的修改init.js里的baseUrl等与nginx一致(找不到就全局查找，默认最初是8000和7000，如果不是说明是部署的)
+    发现前端访问baseUrl都不是后端接口:
+    解决:全局查询调用,修改init.js baseUrl 为后端部署接口
+    
     
 
 2.后端-> apache（自行配置）8009，当然你也可以不改就用8000
     添加apache配置
-    修改settings.py里DEBUG=False,来加载部署用的settings_apache.py
+    修改settings.py里DEBUG=False来加载部署用的settings_apache.py
     修改settings_apache.py里所有不对的url路径
-    根据上面的修改init.js里的baseUrl等与部署后端一致
+    后面出现后端8009/media/sku图片404解决： 此时settings_apache.py PIC_URL = 'http://127.0.0.1:8009' + MEDIA_URL
+    settings_apache.py里的 PIC_URL #查看PIC_URL被引用对象(Alt+F7),发现会改对象会放到json里返回给前端,是图片服务器返回的图片路径
+    所以需要配置图片服务器,
+    在apache配置项里添加media：
+    Alias /media/ D:/2202/day12_all/dashopt/media/
+    <Directory D:/2202/day12_all/dashopt/media>
+    AllowOverride None
+    Options None
+    Require all granted
+    </Directory>
+    个人感觉如果这样做用apache作为图片服务器太拉了,因为nginx性能更好
+    所以改settings_apache.py PIC_URL = 'http://127.0.0.1:8008' + MEDIA_URL来nginx作为静态服务器
+    另外-发现init.js的imgUrl经过全项目查找查看调用,并执行调用看日志,以及各种端口组合,发现个imgUrl其实只有在用于不登录的时候添加购物车才使用,它也是属于来自静态文件服务器图片路径,
+    所以必须要修改init.js 的 baseUrl 与 settings_apache.py PIC_URL 的 PIC_URL一致,都是图片服务器路径
+    配置nginx media
+    location /media/ {
+            root D:/2202/day12_all/dashopt; #此处为Django中设置的mediaroot文件夹位置
+        }
     
-3.nginx->apache
+   
+3.nginx<->apache
 
 注意前端端口和后端端口
 
