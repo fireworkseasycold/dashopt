@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'qcbdirbebiz++y!2o+o8rm%d+$k_*c8m@rtolf7w&h_ztdjs26'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -236,21 +236,27 @@ SMS_CONFIG = {
 ###################第三方微博登录配置###########
 CLIENT_ID = "3084428610"
 CLIENT_SECRET = "7bf7c254909e1cf92e210cf5e50419f1"
-REDIRECT_URI = "http://localhost:7000/dadashop/templates/callback.html"
+REDIRECT_URI = "http://localhost:8008/dadashop/templates/callback.html"
 #############################################
 
-# http://127.0.0.1:8000/media/1.png
+# http://127.0.0.1:8009/media/1.png
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-PIC_URL = 'http://127.0.0.1:8000' + MEDIA_URL
+PIC_URL = 'http://127.0.0.1:8009' + MEDIA_URL
 
 
 ###############第三方支付配置##################
 ALIPAY_APPID = "2021000117687615"
-ALIPAY_RETURN_URL = "http://127.0.0.1:8000/v1/pays/return_url"
-ALIPAY_NOTIFY_URL = "http://127.0.0.1:8000/v1/pays/notify_url"
+ALIPAY_RETURN_URL = "http://127.0.0.1:8009/v1/pays/return_url"
+ALIPAY_NOTIFY_URL = "http://127.0.0.1:8009/v1/pays/notify_url"
 ALIPAY_KEYS_DIR = os.path.join(BASE_DIR, "utils/key_file/")
 #############################################
+
+
+if DEBUG==True:
+    print('已启用生产配置')
+else:
+    print('生产配置有误')
 
 
 
