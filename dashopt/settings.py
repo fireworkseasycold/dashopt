@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'qcbdirbebiz++y!2o+o8rm%d+$k_*c8m@rtolf7w&h_ztdjs26'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -251,6 +251,17 @@ ALIPAY_RETURN_URL = "http://127.0.0.1:8000/v1/pays/return_url"
 ALIPAY_NOTIFY_URL = "http://127.0.0.1:8000/v1/pays/notify_url"
 ALIPAY_KEYS_DIR = os.path.join(BASE_DIR, "utils/key_file/")
 #############################################
+
+
+#开发环境下使用DEBUG=True,部署时候改成False,然后会自动加载生产配置
+if DEBUG==False:  #生产环境
+    try:
+        from .settings_apache import *
+    except:
+        print('没有找到生产环境配置')
+else:
+    print('已启用开发环境')
+    pass
 
 
 
