@@ -52,10 +52,17 @@ mysql+redis
 
 /(ㄒoㄒ)/~~，还是云服务器好用，服务器ip+端口或者dns解析了的域名）
 
-1.前端  ->nginx（自行配置）
+1.前端  ->nginx（自行配置）8008
+    添加nginx配置
+    根据上面的修改init.js里的baseUrl等与nginx一致(找不到就全局查找，默认最初是8000和7000，如果不是说明是部署的)
+    
 
-2.后端-> apache（自行配置）
-
+2.后端-> apache（自行配置）8009，当然你也可以不改就用8000
+    添加apache配置
+    修改settings.py里DEBUG=False,来加载部署用的settings_apache.py
+    修改settings_apache.py里所有不对的url路径
+    根据上面的修改init.js里的baseUrl等与部署后端一致
+    
 3.nginx->apache
 
 注意前端端口和后端端口
@@ -72,13 +79,11 @@ mysql+redis
 
 
 
-地址挂了说明我关了内网穿透，
+地址挂了说明我关了内网穿透
 
 用户：（未开放注册）使用dadashop  密码123456
 
 商品：只有一个spu的三个sku数据：手提包，详情页分别是skuid=1 2 3
-
-
 
 前端页面部分路由不生效请忽略
 
