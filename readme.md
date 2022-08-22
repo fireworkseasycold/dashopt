@@ -93,16 +93,22 @@ mysql+redis
 
 如果需要linux部署的，安装uwsgi,替换modwsgi与apache即可
 
-后面看看腾讯的宝塔面板，好像更方便，写个shell脚本监控程序状态，比如
+后面看看腾讯的宝塔面板，好像更方便，写个shell脚本监控程序状态
 
 
 
 
-示例地址: http://aqcfxd.natappfree.cc
+本地使用natapp内网穿透:
+出现Access to XMLHttpRequest at 'http://127.0.0.1:8009/v1/goods/index' from origin 'http://aqcfxd.natappfree.cc' has been blocked by CORS policy: The request client is not a secure context and the resource is in more-private address space `local`.
+解决:思路 jsonp,或者 做代理或改dns,两种资源都改成内网或者外网ip ,比如nginx代理apache(我原先的博客这么做的没报错)  或者跨域响应头加Access-Control-Allow-Private-Network 或者https 或者chrome://flags/#block-insecure-private-network-requests 设置disabled
+最后:chrome://flags/#block-insecure-private-network-requests 或者设置disabled生效 ;修改baseUrl为8010,再nginx代理8010->8009
+但是都引发了jwttoken失效问题
+放弃
+最后尝试apache部署虚拟主机部署多个django项目
 
-地址挂了说明我关了内网穿透,服务器太小了已经有个项目快爆了,而且这个项目也不是很好,先本地
 
-用户：（未开放注册,荣联云我只添加弄了自己的手机作为短信验证注册测试）用户名 dadashop  密码 123456 
+
+登录用户：（未开放注册,荣联云我只添加弄了自己的手机作为短信验证注册测试）用户名 dadashop  密码 123456 
 
 商品：只有一个spu的三个sku数据：手提包，详情页分别是skuid=1 2 3,别管界面上的可选,直接在详情页加购物车或者购买
 前端页面部分路由不生效请忽略
