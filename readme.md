@@ -1,7 +1,7 @@
 # dashopt
 
 
-参考bilibili视频，与视频略有不同复现电商后端，前端是拿的不完全匹配的视频源码
+参考bilibili视频，与视频略有不同复现电商后端，前端是拿的不完全匹配的视频源码...其实后端也和视频不完全一致,我当初参考做的是另一个视频不过挂了
 
 [视频地址](https://www.bilibili.com/video/BV1ee411p7LD?spm_id_from=333.999.0.0&vd_source=16c42409242358fc5a48ba5c09dc17a0)
 
@@ -75,7 +75,7 @@ mysql+redis
     </Directory>
     个人感觉如果这样做用apache作为图片服务器太拉了,因为nginx性能更好
     所以改settings_apache.py PIC_URL = 'http://127.0.0.1:8008' + MEDIA_URL来nginx作为静态服务器
-    另外-发现init.js的imgUrl经过全项目查找查看调用,并执行调用看日志,以及各种端口组合,发现个imgUrl其实只有在用于不登录的时候添加购物车才使用,它也是属于来自静态文件服务器图片路径,
+    另外-发现init.js的imgUrl经过全项目查找查看调用,并执行调用看日志,以及各种端口组合,发现imgUrl其实只有在用于不登录的时候添加购物车才使用,它也是属于来自静态文件服务器图片路径,
     所以必须要修改init.js 的 baseUrl 与 settings_apache.py PIC_URL 的 PIC_URL一致,都是图片服务器路径
     配置nginx media
     location /media/ {
@@ -98,14 +98,16 @@ mysql+redis
 
 
 
+示例地址: http://aqcfxd.natappfree.cc
 
-地址挂了说明我关了内网穿透
+地址挂了说明我关了内网穿透,服务器太小了已经有个项目快爆了,而且这个项目也不是很好,先本地
 
-用户：（未开放注册）使用dadashop  密码123456
+用户：（未开放注册,荣联云我只添加弄了自己的手机作为短信验证注册测试）用户名 dadashop  密码 123456 
 
-商品：只有一个spu的三个sku数据：手提包，详情页分别是skuid=1 2 3
-
+商品：只有一个spu的三个sku数据：手提包，详情页分别是skuid=1 2 3,别管界面上的可选,直接在详情页加购物车或者购买
 前端页面部分路由不生效请忽略
+
+右上角的几个图标都是可以点击的,分别是地址,订单,购物车,用户
 
 
 
