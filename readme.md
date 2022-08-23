@@ -96,15 +96,16 @@ mysql+redis
 后面看看腾讯的宝塔面板，好像更方便，写个shell脚本监控程序状态
 
 
-
-
 本地使用natapp内网穿透:
 出现Access to XMLHttpRequest at 'http://127.0.0.1:8009/v1/goods/index' from origin 'http://aqcfxd.natappfree.cc' has been blocked by CORS policy: The request client is not a secure context and the resource is in more-private address space `local`.
 解决:思路 jsonp,或者 做代理或改dns,两种资源都改成内网或者外网ip ,比如nginx代理apache(我原先的博客这么做的没报错)  或者跨域响应头加Access-Control-Allow-Private-Network 或者https 或者chrome://flags/#block-insecure-private-network-requests 设置disabled
 最后:chrome://flags/#block-insecure-private-network-requests 或者设置disabled生效 ;修改baseUrl为8010,再nginx代理8010->8009
 但是都引发了jwttoken失效问题
-放弃
-最后尝试apache部署虚拟主机部署多个django项目
+放弃,前端提示网页被修改，貌似是类似local class serialVersionUID本地和远程不一致导致的错误
+最后尝试apache部署虚拟主机部署来多个django项目（因为已经有了博客）
+看了官网modwsgi的，首先只支持一个modwsgi...
+后续实在太繁琐了，尤其我是不同的mod_wsgi还有不同的python版本虚拟环境，不停修改根据报错测试两天。。。卒
+还是用iis
 
 
 
