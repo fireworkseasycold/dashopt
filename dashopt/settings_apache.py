@@ -256,10 +256,10 @@ ALIPAY_KEYS_DIR = os.path.join(BASE_DIR, "utils/key_file/")
 #############################################
 
 
-if DEBUG==True:
+if DEBUG==False:
     print('已启用生产配置')
 else:
-    print('生产配置有误')
+    print('生产配置有误:debug是true')
 
 
 
