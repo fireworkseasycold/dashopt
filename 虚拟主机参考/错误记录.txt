@@ -1,0 +1,95 @@
+
+(base) PS C:\Apache24\bin> .\httpd.exe
+httpd.exe: Syntax error on line 511 of C:/Apache24/conf/httpd.conf: Include takes one argument, Name(s) of the config fi
+le(s) to be included; fails if the wildcard does not match at least one file
+
+解决： apache每一行后不能有注释
+
+WSGIPythonHome cannot occur within <VirtualHost> section
+
+解决：
+ServerName example.com
+CustomLog logs/example.com-access_log common
+ErrorLog logs/example.com-error_log
+
+WSGIDaemonProcess example.com python-path=/virtualenvpathto/site-packages:/pathto/exampleprojecthome
+WSGIProcessGroup example.com
+继续
+AH00526: Syntax error on line 43 of C:/Apache24/conf/extra/httpd-vhosts.conf:
+Invalid command 'WSGIDaemonProcess', perhaps misspelled or defined by a module not included in the server configuration
+
+去掉 WSGIDaemonProcess解决
+
+新问题
+AH00526: Syntax error on line 47 of C:/Apache24/conf/extra/httpd-vhosts.conf:
+Invalid command 'WSGIPythonPath', perhaps misspelled or defined by a module not included in the server configuration
+解决：去掉'WSGIPythonPath'，httpd.conf里配置
+
+
+后续：类似错误。。。
+AH00558: httpd.exe: Could not reliably determine the server's fully qualified domain name, using fe80::3083:6c32:46c1:5a
+16. Set the 'ServerName' directive globally to suppress this message
+在httpd.conf添加servername
+添加servername
+
+后续启动停止，查看日志：
+
+[Tue Aug 23 18:57:08.511226 2022] [mpm_winnt:notice] [pid 5256:tid 260] AH00455: Apache/2.4.54 (Win64) mod_wsgi/4.7.1 Python/3.6 configured -- resuming normal operations
+[Tue Aug 23 18:57:08.512198 2022] [mpm_winnt:notice] [pid 5256:tid 260] AH00456: Apache Lounge VS16 Server built: Jun 22 2022 09:58:15
+[Tue Aug 23 18:57:08.512198 2022] [core:notice] [pid 5256:tid 260] AH00094: Command line: 'C:\\Apache24\\bin\\httpd.exe -d C:/Apache24'
+[Tue Aug 23 18:57:08.513177 2022] [mpm_winnt:notice] [pid 5256:tid 260] AH00418: Parent: Created child process 12104
+Fatal Python error: Py_Initialize: unable to load the file system codec
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x00001ee4 (most recent call first):
+[Tue Aug 23 18:57:09.767078 2022] [mpm_winnt:crit] [pid 5256:tid 260] AH00419: master_main: create child process failed. Exiting.
+
+解决：在httd.conf配置wsgipython 也就是虚拟环境的目录
+#使用多个WSGIPythonHome 用:分隔开
+WSGIPythonHome "C:/ProgramData/Anaconda3/envs/berryhablog"
+成功启动子进程,虽然还可能报这个错，但是不同点在于能启动了
+
+后续看对应虚拟服务对应的日志
+error
+[Tue Aug 23 19:23:23.235836 2022] [wsgi:error] [pid 8816:tid 1008] [client ::1:61462]   File "<frozen importlib._bootstrap>", line 953, in _find_and_load_unlocked\r, referer: http://localhost:8002/
+[Tue Aug 23 19:23:23.235836 2022] [wsgi:error] [pid 8816:tid 1008] [client ::1:61462] ModuleNotFoundError: No module named 'mysite'\r, referer: http://localhost:8002/
+access 500
+
+解决思路：怀疑是文件路径错误或者wsgi文件路径写错，但不是
+
+参考
+Django 2:https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/modwsgi/#daemon-modeDjango 1.9:：https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/modwsgi/#daemon-mode
+dajngo2官方
+使用mod_wsgi守护模式?
+“守护程序模式”是运行 mod_wsgi 的推荐模式（在非 Windows 平台上）。要创建所需的守护进程组并委托 Django 实例在其中运行，您需要
+添加适当的 WSGIDaemonProcess和WSGIProcessGroup指令。如果您使用守护程序模式，对上述配置的进一步更改是您不能使用WSGIPythonPath; 
+相反，您应该使用python-pathto 选项 WSGIDaemonProcess，例如：
+
+WSGIDaemonProcess example.com python-home=/path/to/venv python-path=/path/to/mysite.com
+WSGIProcessGroup example.com
+如果您想在子目录中服务您的项目（https://example.com/mysite在本例中），您可以添加WSGIScriptAlias 到上面的配置中：
+
+WSGIScriptAlias /mysite /path/to/mysite.com/mysite/wsgi.py process-group=example.com
+有关设置守护程序模式的详细信息，请参阅官方 mod_wsgi 文档。
+参考
+https://www.cnpython.com/qa/92069
+可能是没有在virtualhost中指定虚拟环境/
+WSGIDaemonProcess app python-home=/usr/share/virtualenvs/myapp user=myappuser threads=15 python-path=/my/app/installed/dir/
+
+或者在wsgi.py中使用脚本来启用虚拟环境
+sys.path.append('/home/django_projects/MyProject')
+sys.path.append('/home/django_projects/MyProject/myproject')
+
+以上如果不是windows,或许已经解决
+但windows还是不行
+
+#WSGIDaemonProcess在Windows上不可用于mod_wsgi，在Windows平台上,只有嵌入模式没有守护进程模式，在Windows平台上,只有嵌入模式没有守护进程模式.Apache上使用的MPM是'winnt'MPM.
+所以虚拟环境要写在python wsgi.py脚本里
+等同于：WSGIDaemonProcess app python-home=/usr/share/virtualenvs/myapp user=myappuser threads=15 python-path=/my/app/installed/dir/
+
+conda比较麻烦，没有类似的，最后意外的发现一个大哥的，成功
+
+后续：同时启动两个不同虚拟环境的不同django项目失败
+所以放弃一个httpdconf虚拟主机来启动多个项目
+可以尝试多个conf，制定conf来启动其他项目httpd -k start -f xxxx.conf
+
