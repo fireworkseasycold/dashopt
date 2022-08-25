@@ -104,14 +104,14 @@ mysql+redis
 都可以访问，但是都引发了jwttoken失效问题，并且速度特别慢 -放弃
 git到服务器apache部署，配置同httpd.conf
 后续： 尝试虚拟主机部署（3天）--单个虚拟主机成功：配置参考我的博客项目里的httpd-blogxnzj.conf和httpd-vhosts-blogxnzj.conf
-    一个httpd.conf，启动多个虚拟主机：第二个失败，第二个虚拟环境不生效
-        1.无法同时loadfile两组modwsgi.pyd;如果modwsgi和python版本不一致则更麻烦；我这里都是不同环境的python3.6,所以给一组
-        2.windows是mpm,无法使用守护进程，只能嵌入式
-        3.使用嵌入式，httpd.conf里同时给出两个项目的虚拟环境，根据官网;/:分隔也不行，无法启动apache,会提示错误，并且使用wsgialias必须有pythonhome,还不能不带一个，不能纯python脚本指定；根据官网尝试在脚本里添加虚拟环境和项目路径，成功可以启动，但第二个虚拟环境无法生效，只能访问一开始带的pythonhome对应项目
+一个httpd.conf，启动多个虚拟主机：第二个失败，第二个虚拟环境不生效
+ 1.无法同时loadfile两组modwsgi.pyd;如果modwsgi和python版本不一致则更麻烦；我这里都是不同环境的python3.6,所以给一组
+ 2.windows是mpm,无法使用守护进程，只能嵌入式
+ 3.使用嵌入式，httpd.conf里同时给出两个项目的虚拟环境，根据官网;/:分隔也不行，无法启动apache,会提示错误，并且使用wsgialias必须有pythonhome,还不能不带一个，不能纯python脚本指定；根据官网尝试在脚本里添加虚拟环境和项目路径，成功可以启动，但第二个虚拟环境无法生效，只能访问一开始带的pythonhome对应项目。
 最后使用指定不同名字的httpd.conf来启动http.exe，分别启动两个不同环境的服务--成功在同一个ip的apache服务器上，部署两个项目。
-建议如果部署不是太熟悉的，windows使用iis
-debug:外网访问，使用浏览器开发者工具，发现一些固定写死的ip错误，查看引用和来源，修正为服务器ip(init.js和settings_apache.py的)
+建议同环境的项目同一个http.conf,并且可以多开虚拟主机来提高并发。不同环境的还是各自一个http.conf，并且不会互相影响。
 
+debug:外网访问，使用浏览器开发者工具，发现一些固定写死的ip错误，查看引用和来源，修正为服务器ip(init.js和settings_apache.py的)
 debug:发现token还是失效，原因Apache 抛弃了 Authorization 的 HTTP Header 头导致的，需要对其配置WSGIPassAuthorization On。
 
 
