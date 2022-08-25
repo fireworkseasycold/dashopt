@@ -1,0 +1,8 @@
+jwttoken:AUTHORIZATION
+如果apache认证失效，可能是 Apache 抛弃了 Authorization 的 HTTP Header 头导致的，需要对其配置WSGIPassAuthorization On
+
+单独启动dashopt
+.\httpd.exe -k start -f C:\Apache24\conf\httpd-单独dadashop.conf
+
+
+不同环境的建议使用多个重命名的httpd.conf分别指定定开启
