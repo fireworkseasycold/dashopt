@@ -101,7 +101,7 @@ mysql+redis
 出现Access to XMLHttpRequest at 'http://127.0.0.1:8009/v1/goods/index' from origin 'http://aqcfxd.natappfree.cc' has been blocked by CORS policy: The request client is not a secure context and the resource is in more-private address space `local`.
 解决:思路 jsonp,或者 做代理或改dns,两种资源都改成内网或者外网ip ,比如nginx代理apache(我原先的博客这么做的没报错)  或者跨域响应头加Access-Control-Allow-Private-Network 或者https 或者chrome://flags/#block-insecure-private-network-requests 设置disabled
 最后:chrome://flags/#block-insecure-private-network-requests 或者设置disabled生效 ;修改baseUrl为8010,再nginx代理8010->8009
-都可以访问，但是都引发了jwttoken失效问题 -放弃
+都可以访问，但是都引发了jwttoken失效问题，并且速度特别慢 -放弃
 git到服务器apache部署，配置同httpd.conf
 后续： 尝试虚拟主机部署（3天）--单个虚拟主机成功：配置参考我的博客项目里的httpd-blogxnzj.conf和httpd-vhosts-blogxnzj.conf
     一个httpd.conf，启动多个虚拟主机：第二个失败，第二个虚拟环境不生效
@@ -111,7 +111,9 @@ git到服务器apache部署，配置同httpd.conf
 最后使用指定不同名字的httpd.conf来启动http.exe，分别启动两个不同环境的服务--成功在同一个ip的apache服务器上，部署两个项目。
 建议如果部署不是太熟悉的，windows使用iis
 debug:外网访问，使用浏览器开发者工具，发现一些固定写死的ip错误，查看引用和来源，修正为服务器ip(init.js和settings_apache.py的)
-        
+
+debug:发现token还是失效，原因Apache 抛弃了 Authorization 的 HTTP Header 头导致的，需要对其配置WSGIPassAuthorization On。
+
 
 
 
