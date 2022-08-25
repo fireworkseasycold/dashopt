@@ -1,7 +1,8 @@
 # dashopt
 
+参考bilibili视频，与视频略有不同复现电商后端，
 
-参考bilibili视频，与视频略有不同复现电商后端，前端是拿的不完全匹配的视频源码...其实后端也和视频不完全一致,我当初参考做的是另一个视频不过挂了
+前端是拿的不完全匹配的视频源码，我自己根据报错改了一些内容...其实后端也和视频不完全一致,
 
 [视频地址](https://www.bilibili.com/video/BV1ee411p7LD?spm_id_from=333.999.0.0&vd_source=16c42409242358fc5a48ba5c09dc17a0)
 
@@ -82,7 +83,7 @@ mysql+redis
             root D:/2202/day12_all/dashopt; #此处为Django中设置的mediaroot文件夹位置
         }
     
-   
+
 3.nginx<->apache
 
 注意前端端口和后端端口
@@ -96,35 +97,59 @@ mysql+redis
 后面看看腾讯的宝塔面板，好像更方便，写个shell脚本监控程序状态
 
 
-一些记录：
-使用natapp内网穿透（一天）:
-出现Access to XMLHttpRequest at 'http://127.0.0.1:8009/v1/goods/index' from origin 'http://aqcfxd.natappfree.cc' has been blocked by CORS policy: The request client is not a secure context and the resource is in more-private address space `local`.
-解决:思路 jsonp,或者 做代理或改dns,两种资源都改成内网或者外网ip ,比如nginx代理apache(我原先的博客这么做的没报错)  或者跨域响应头加Access-Control-Allow-Private-Network 或者https 或者chrome://flags/#block-insecure-private-network-requests 设置disabled
-最后:chrome://flags/#block-insecure-private-network-requests 或者设置disabled生效 ;修改baseUrl为8010,再nginx代理8010->8009
-都可以访问，但是都引发了jwttoken失效问题，并且速度特别慢 -放弃
-git到服务器apache部署，配置同httpd.conf
-后续： 尝试虚拟主机部署（3天）--单个虚拟主机成功：配置参考我的博客项目里的httpd-blogxnzj.conf和httpd-vhosts-blogxnzj.conf
-一个httpd.conf，启动多个虚拟主机：第二个失败，第二个虚拟环境不生效
- 1.无法同时loadfile两组modwsgi.pyd;如果modwsgi和python版本不一致则更麻烦；我这里都是不同环境的python3.6,所以给一组
- 2.windows是mpm,无法使用守护进程，只能嵌入式
- 3.使用嵌入式，httpd.conf里同时给出两个项目的虚拟环境，根据官网;/:分隔也不行，无法启动apache,会提示错误，并且使用wsgialias必须有pythonhome,还不能不带一个，不能纯python脚本指定；根据官网尝试在脚本里添加虚拟环境和项目路径，成功可以启动，但第二个虚拟环境无法生效，只能访问一开始带的pythonhome对应项目。
-最后使用指定不同名字的httpd.conf来启动http.exe，分别启动两个不同环境的服务--成功在同一个ip的apache服务器上，部署两个项目。
-建议同环境的项目同一个http.conf,并且可以多开虚拟主机来提高并发。不同环境的还是各自一个http.conf，并且不会互相影响。
 
-debug:外网访问，使用浏览器开发者工具，发现一些固定写死的ip错误，查看引用和来源，修正为服务器ip(init.js和settings_apache.py的)
-debug:发现token还是失效，原因Apache 抛弃了 Authorization 的 HTTP Header 头导致的，需要对其配置WSGIPassAuthorization On。
+
+
+### 一些部署后发现的记录错误与解决：
+
+使用natapp内网穿透（一天）:
+
+出现Access to XMLHttpRequest at 'http://127.0.0.1:8009/v1/goods/index' from origin 'http://aqcfxd.natappfree.cc' has been blocked by CORS policy: The request client is not a secure context and the resource is in more-private address space `local`.
+
+解决:思路 jsonp,或者 做代理或改dns,两种资源都改成内网或者外网ip ,比如nginx代理apache(我原先的博客这么做的没报错)  或者跨域响应头加Access-Control-Allow-Private-Network 或者https 或者chrome://flags/#block-insecure-private-network-requests 设置disabled
+
+最后:chrome://flags/#block-insecure-private-network-requests 或者设置disabled生效 ;修改baseUrl为8010,再nginx代理8010->8009
+都可以访问，后续都引发了jwttoken失效问题（后面有解决），并且速度特别慢 -放弃本地部署的考虑。
+
+git到服务器apache部署，配置同httpd.conf：
+
+后续： 尝试虚拟主机部署（3天）--单个虚拟主机成功：配置参考我的博客项目里的httpd-blogxnzj.conf和httpd-vhosts-blogxnzj.conf
+
+ 1.无法同时loadfile两组modwsgi.pyd;如果modwsgi和python版本不一致则更麻烦；我这里都是不同环境的python3.6,所以给一组
+
+ 2.windows是mpm,无法使用守护进程，只能嵌入式
+
+ 3.使用嵌入式，httpd.conf里同时给出两个项目的虚拟环境，根据官网;/:分隔也不行，无法启动apache,会提示错误，并且使用wsgialias必须有pythonhome,还不能不带一个，不能纯python脚本指定；根据官网尝试在脚本里添加虚拟环境和项目路径，成功可以启动，但第二个虚拟环境无法生效，只能访问一开始带的pythonhome对应项目，所以一个httpd.conf，启动多个环境不同的虚拟主机：第二个失败，第二个虚拟环境不生效。
+
+最后使用指定不同名字的httpd.conf来启动http.exe，分别启动两个不同环境的服务--成功在同一个ip的apache服务器上，部署两个项目。
+
+建议同环境的项目同一个http.conf,并且可以多开虚拟主机来提高并发；不同环境的还是每个服务各自一个http.conf启动，并且不会互相影响。
+
+
+
+debug:外网访问，使用浏览器开发者工具，发现一些固定写死的ip导致的资源访问错误，查看引用和来源，修正为服务器ip(init.js和settings_apache.py的)
+
+debug:服务器部署后，使用手访问发现token还是失效，原因Apache 抛弃了 Authorization 的 HTTP Header 头导致的，需要对其配置WSGIPassAuthorization On。
 
 
 
 
 
 ### 使用：
-登录用户：（未开放注册,荣联云我只添加弄了自己的手机作为短信验证注册测试）用户名 dadashop  密码 123456 
 
-商品：只有一个spu的三个sku数据：手提包，详情页分别是skuid=1 2 3,别管界面上的可选,直接在详情页加购物车或者购买
+101.34.15.153：8008
+
+或者berryha.com:8008
+
+地址：登录用户：用户名 dadashop  密码 123456   （未开放注册,荣联云只自己的手机作为短信验证注册测试，所以别注册了）
+
+商品：只有一个spu的三个sku数据：名字是手提包，详情页分别是skuid=1 2 3,详情页只有加购物车或者购买两个路由
+
+购物车：一个在本地浏览器，一个在redis,登录后会合并
+
 前端页面部分路由不生效请忽略
 
-右上角的几个图标都是可以点击的,分别是地址,订单,购物车,用户
+
 
 
 
@@ -136,12 +161,14 @@ debug:发现token还是失效，原因Apache 抛弃了 Authorization 的 HTTP He
 
 
 
-[树莓博客网](thhp://101.34.15.153)
+[树莓博客网](thhp://101.34.15.153)101.34.15.153:80
+
+爬虫的兄弟们千万不要爬我的，练手也不要，小服务器。。。
+
+当下进行中的：正在尝试drf进行一个图像识别处理ocr+facerecognition 及Workflow工作流，BPM与RPA 结合
 
 csdn   fireworkseasycold
 
 欢迎来信留言qq.com 1476094297@qq.com
 
 另外：找工作中，欢迎小伙伴提供苏州python的后端工作机会
-
-
