@@ -166,9 +166,9 @@ berryha.com
 
 爬虫的兄弟们千万不要爬我的，练手也不要，小服务器。。。
 
-当下进行中的：正在尝试drf进行一个图像识别处理ocr+facerecognition 及Workflow工作流，BPM与RPA 结合
 
 csdn   fireworkseasycold
+git https://github.com/fireworkseasycold
 
 欢迎来信留言qq.com 1476094297@qq.com
 
