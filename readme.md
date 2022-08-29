@@ -1,8 +1,8 @@
 # dashopt
 
-参考bilibili视频，与视频略有不同复现电商后端，
+参考bilibili视频，与视频略有不同复现电商后端
 
-前端是拿的不完全匹配的视频源码，我自己根据报错改了一些内容...其实后端也和视频不完全一致,
+前端主要是拿的不完全匹配的视频源码，后面我根据自己的后端接口调试修改实现了一部分前端js代码
 
 [视频地址](https://www.bilibili.com/video/BV1ee411p7LD?spm_id_from=333.999.0.0&vd_source=16c42409242358fc5a48ba5c09dc17a0)
 
@@ -19,7 +19,7 @@ pip install django2.2-3.2.14 redis(我的博客下有windows安装包) django-co
 
 user  jwttoken 注册登录
 
-goods   变动即更新缓存
+goods   变动即更新缓存。商品首页，商品品类页，商品详情页，详情页销售属性切换四个接口（视频只有教导商品首页和详情页两个，另外两个是我自己写的接口）
 
 carts  使用redis而不是mysql存储，注意未登录时浏览器购物车与登陆后redis购物车合并
 
@@ -141,13 +141,12 @@ debug:服务器部署后，使用手访问发现token还是失效，原因Apache
 
 地址：登录用户：用户名 dadashop  密码 123456   （未开放注册,荣联云只自己的手机作为短信验证注册测试，所以别注册了）
 
-商品：只有一个spu的三个sku数据：名字是手提包，详情页分别是skuid=1 2 3,详情页只有加购物车或者购买两个路由
+商品：只有一个种类的spu的三个sku数据：品类是手提包，详情页分别是skuid=1 2 3,分别对应安踏A蓝小 安踏A灰大 安踏B蓝小 ,切换品类只有这三个，所以切换其他样式会提示没有这个样式。
 
 购物车：一个在本地浏览器，一个在redis,登录后会合并
 
-前端页面部分路由不生效请忽略
+前端页面部分路由#不生效请忽略
 
-不会放很久
 
 
 
@@ -162,13 +161,12 @@ debug:服务器部署后，使用手访问发现token还是失效，原因Apache
 
 
 [树莓博客网](http://101.34.15.153)
-berryha.com
 
 爬虫的兄弟们千万不要爬我的，练手也不要，小服务器。。。
 
+当下进行中的：正在尝试drf进行一个图像识别处理ocr+facerecognition 及Workflow工作流，BPM与RPA 结合
 
 csdn   fireworkseasycold
-git https://github.com/fireworkseasycold
 
 欢迎来信留言qq.com 1476094297@qq.com
 
