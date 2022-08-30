@@ -21,8 +21,6 @@ urlpatterns = [
     # re_path(r'^/catalogs/(?P<catalog_id>\d+)', views.GoodsListView.as_view()),  #这个有误
     path('catalogs/<int:catalog_id>', views.GoodsListView.as_view()),
 
-    # http://127.0.0.1:8000/v1/goods/search/
-    path(r'^/search/$',views.GoodSearchView.as_view())
 ]
 
 
