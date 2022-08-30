@@ -12,7 +12,7 @@ urlpatterns = [
     # 详情页展示: v1/goods/detail/
     path("detail/<int:sku_id>", views.GoodsDetailView.as_view()),
 
-    #以下三个为个人开发接口
+    #以下为个人开发接口
     # 详情页选择商品规格sku
     #/v1/goods/sku?1=3&2=2&spuid=1  #key是销售属性id，值是销售属性值id
     path("sku", views.GoodschooseskuView.as_view()),
