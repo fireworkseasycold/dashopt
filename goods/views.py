@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views import View
-from haystack.forms import ModelSearchForm
+
 
 from goods.models import Catalog, SPU, SKU, SKUImage, SPUSaleAttr, SaleAttrValue, SKUSpecValue
 
@@ -323,38 +323,4 @@ class GoodsListView(View):
         }
 
         # print(result)
-        return JsonResponse(result)
-
-class GoodSearchView(View):
-    def post(self, request):
-        # 搜索 es版本
-        # 前端必须用表单提交 且 input name=q
-        data = request.POST.get('q')
-        if not data:
-            return JsonResponse({'code': 3999, 'error': 'Please give me q'})
-        form = ModelSearchForm(request.POST, load_all=True)
-        # 必须调用form.is_valid() form.search才能找到数据
-        if form.is_valid():
-            results = form.search()
-        else:
-            return JsonResponse({'code': 3888, 'error': 'Please give me q !!'})
-        page_size = settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE
-        paginator = Paginator(results, page_size)
-        try:
-            c_page = int(request.POST.get('page', 1))
-            page = paginator.page(c_page)
-        except Exception as e:
-            return JsonResponse({'code': 3666, 'error': 'page number is wrong'})
-
-        sku_list = []
-        for result in page.object_list:
-            d = {}
-            d['skuid'] = result.object.id
-            d['name'] = result.object.name
-            d['price'] = result.object.price
-            d['image'] = str(result.object.default_image_url)
-            sku_list.append(d)
-        result = {'code': 200, 'data': sku_list,
-                  'paginator': {'pagesize': page_size, 'total': len(results)},
-                  'base_url': settings.PIC_URL}
         return JsonResponse(result)
