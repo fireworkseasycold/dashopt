@@ -235,7 +235,7 @@ class GoodschooseskuView(View):
             # 获取对应的sku销售属性值id
             sale_attrs_val_query_lists = SaleAttrValue.objects.filter(sku=sku.id)  #多对多反向查询
             # SKU.objects.filter(sale_attr_value=SaleAttrValue)
-            #SKU表里有个sale_attr_value字段是外键指向SaleAttrValue,SKU主表SaleAttrValue从表
+            #SKU表里有个sale_attr_value字段是外键指向SaleAttrValu
             #SaleAttrValue里有个外键，指向SPUSaleAttr
             #SPUSaleAttr里有个外键，指向SKU
             # print("销售属性值查询列表：",sale_attrs_val_query_lists)
